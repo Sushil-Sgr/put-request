@@ -5,11 +5,13 @@ const app = express();
 const port = 3000;
 import path from 'path';
 import { fileURLToPath } from 'url';
+import methodOverride from 'method-override';
 import { log } from 'console';
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -47,24 +49,36 @@ app.post('/Chats', (req, res) => {
     }).catch(err => {
         console.log(err);
     });
-    res.redirect('chats.ejs');
+    res.redirect('/chats');
 
 })
+
+
+// update route
 app.put('/Chats/:id', async (req, res) => {
     let { id } = req.params;
-    let { newMessage } = req.body;
-    let updatesChat = await Chat.findByIdAndUpdate(
-        id,
-        { message: newMessage },
-        {
-            runValidators: true,
-            new: true
-        });
+    let { message : newMessage } = req.body;
+    console.log(newMessage);
+    
+    let updatesChat = await Chat.findByIdAndUpdate(id,{message: newMessage },{runValidators: true,new: true});
     console.log(updatesChat);
+    res.redirect('/chats');
 })
+
+//Destroy route
+app.delete('/Chats/:id', async (req, res) => {
+    let { id } = req.params;
+    let deletedChat = await Chat.findByIdAndDelete(id);
+    console.log(deletedChat);
+    res.redirect('/chats');
+})
+
 app.get('/Chats/new', (req, res) => {
     res.render('new.ejs');
 })
+
+
+
 app.get('/Chats/:id/edit', async (req, res) => {
     let id = req.params.id;
     let chats = await Chat.findById(id)

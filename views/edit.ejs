@@ -12,7 +12,7 @@
     </h3>
     <h3>this message send from <%= chats.from %> to <%= chats.to %>
     </h3>
-    <form action="/chats/<%= chats.id %>?_method=PUT" method="POST"> 
+    <form method="POST" action="/chats/<%= chats.id %>?_method=PUT" > 
         <textarea name="message" value="<%= chats.message %>"><%= chats.message %> </textarea>
         <br>
         <br>
